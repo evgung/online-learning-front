@@ -1,0 +1,79 @@
+{
+  "courses": [
+    {
+      "id": "0",
+      "title": "Введение в Vue.js",
+      "category": "Программирование",
+      "readingTime": 30,
+      "hasTest": true,
+      "blocks": [
+        {
+          "title": "Что такое Vue.js?",
+          "content": "Vue.js — это прогрессивный фреймворк для создания пользовательских интерфейсов..."
+        }
+      ],
+      "test": [
+        {
+          "question": "Какой фреймворк мы изучаем?",
+          "options": [
+            "React",
+            "Vue.js",
+            "Angular",
+            "Svelte"
+          ],
+          "correctAnswer": 1
+        }
+      ]
+    },
+    {
+      "id": "5366",
+      "title": "Программирование на C#",
+      "category": "Программирование",
+      "readingTime": 10,
+      "blocks": [
+        {
+          "title": "Введение",
+          "content": "C# - это язык программирования"
+        },
+        {
+          "title": "Циклы",
+          "content": "Циклы for, while"
+        }
+      ],
+      "test": [
+        {
+          "question": "C# это?",
+          "options": [
+            "Язык программирования",
+            "Фигня",
+            "Что-то непонятное"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "Какие есть циклы",
+          "options": [
+            "for, until",
+            "for, while"
+          ],
+          "correctAnswer": 1
+        }
+      ],
+      "hasTest": true
+    },
+    {
+      "id": "3206",
+      "title": "Дизайн - это круто",
+      "category": "Дизайн",
+      "readingTime": 40,
+      "blocks": [
+        {
+          "title": "ФВав",
+          "content": "пвапыва"
+        }
+      ],
+      "test": [],
+      "hasTest": false
+    }
+  ]
+}
