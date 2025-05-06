@@ -14,7 +14,7 @@ export const useApi = () => {
     }
   };
 
-  const getCourseById = async (id: number) => {
+  const getCourseById = async (id: string) => {
     try {
       const response = await api.get(`/courses/${id}`);
       return response.data;

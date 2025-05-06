@@ -21,7 +21,7 @@ export const useCoursesStore = defineStore('courses', () => {
     }
   };
 
-  const fetchCourseById = async (id: number) => {
+  const fetchCourseById = async (id: string) => {
     isLoading.value = true;
     error.value = null;
     try {

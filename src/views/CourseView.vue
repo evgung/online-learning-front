@@ -83,7 +83,7 @@
     },
     props: {
       id: {
-        type: [String, Number],
+        type: String,
         required: true,
       },
     },
@@ -100,7 +100,7 @@
         isLoading.value = true;
         error.value = null;
         try {
-          const courseId = Number(route.params.id || props.id);
+          const courseId = String(route.params.id || props.id);
           course.value = await coursesStore.fetchCourseById(courseId);
           userAnswers.value = new Array(course.value.test?.length || 0).fill(-1);
         } catch (err) {

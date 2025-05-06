@@ -20,7 +20,7 @@
     props: {
       course: {
         type: Object as PropType<{
-          id: number;
+          id: string;
           title: string;
           category: string;
           readingTime: number;
