@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { useApi } from '@/api/useApi';
 import { ref } from 'vue';
+import { useCookies } from 'vue3-cookies'
+const { cookies } = useCookies()
 
 export const useCoursesStore = defineStore('courses', () => {
   const courses = ref<any[]>([]);
@@ -39,9 +41,12 @@ export const useCoursesStore = defineStore('courses', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const newCourse = await createCourse(courseData);
-      courses.value.push(newCourse);
-      return newCourse;
+      const courseDataWithUser = {
+        ...courseData,
+        authorId: cookies.get("id")
+      }
+      await createCourse(courseDataWithUser);
+      await fetchCourses();
     } catch (err) {
       error.value = 'Не удалось создать курс';
       console.error(err);

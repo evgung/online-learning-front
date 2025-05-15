@@ -15,18 +15,18 @@
         </div>
         
         <div class="course-blocks">
-          <div v-for="(block, index) in course.blocks" :key="index" class="block">
+          <div v-for="(block, index) in course.textBlocks" :key="index" class="block">
             <h3>{{ block.title }}</h3>
             <p>{{ block.content }}</p>
           </div>
         </div>
         
-        <div v-if="course.hasTest && course.test.length > 0" class="course-test">
+        <div v-if="course.hasTest && course.testQuestions.length > 0" class="course-test">
           <h2>Тест по материалу</h2>
           <div v-if="!testSubmitted" class="test-questions">
-            <div v-for="(question, qIndex) in course.test" :key="qIndex" class="question">
+            <div v-for="(question, qIndex) in course.testQuestions" :key="qIndex" class="question">
               <h4>{{ qIndex + 1 }}. {{ question.question }}</h4>
-              <div v-for="(option, oIndex) in question.options" :key="oIndex" class="option">
+              <div v-for="(option, oIndex) in question.answers" :key="oIndex" class="option">
                 <input
                   type="radio"
                   :name="'q' + qIndex"
@@ -42,22 +42,22 @@
           
           <div v-else class="test-results">
             <h3>Результаты теста</h3>
-            <p>Вы ответили правильно на {{ correctAnswers }} из {{ course.test.length }} вопросов</p>
+            <p>Вы ответили правильно на {{ correctAnswers }} из {{ course.testQuestions.length }} вопросов</p>
             <p>Процент правильных ответов: {{ testPercentage }}%</p>
             
-            <div v-for="(question, qIndex) in course.test" :key="'r' + qIndex" class="result-item">
+            <div v-for="(question, qIndex) in course.testQuestions" :key="'r' + qIndex" class="result-item">
               <h4>{{ qIndex + 1 }}. {{ question.question }}</h4>
               <p>
                 Ваш ответ: 
                 <span :class="{
-                  'correct': userAnswers[qIndex] === question.correctAnswer,
-                  'wrong': userAnswers[qIndex] !== question.correctAnswer
+                  'correct': userAnswers[qIndex] === question.correctAnswerIndex,
+                  'wrong': userAnswers[qIndex] !== question.correctAnswerIndex
                 }">
-                  {{ question.options[userAnswers[qIndex]] || 'Нет ответа' }}
+                  {{ question.answers[userAnswers[qIndex]] || 'Нет ответа' }}
                 </span>
               </p>
-              <p v-if="userAnswers[qIndex] !== question.correctAnswer">
-                Правильный ответ: {{ question.options[question.correctAnswer] }}
+              <p v-if="userAnswers[qIndex] !== question.correctAnswerIndex">
+                Правильный ответ: {{ question.answers[question.correctAnswerIndex] }}
               </p>
             </div>
             
@@ -102,7 +102,7 @@
         try {
           const courseId = String(route.params.id || props.id);
           course.value = await coursesStore.fetchCourseById(courseId);
-          userAnswers.value = new Array(course.value.test?.length || 0).fill(-1);
+          userAnswers.value = new Array(course.value.testQuestions?.length || 0).fill(-1);
         } catch (err) {
           error.value = 'Не удалось загрузить курс';
           console.error(err);
@@ -114,15 +114,15 @@
       onMounted(fetchCourse);
   
       const correctAnswers = computed(() => {
-        if (!course.value || !course.value.test) return 0;
-        return course.value.test.reduce((acc: number, question: any, index: number) => {
-          return acc + (userAnswers.value[index] === question.correctAnswer ? 1 : 0);
+        if (!course.value || !course.value.testQuestions) return 0;
+        return course.value.testQuestions.reduce((acc: number, question: any, index: number) => {
+          return acc + (userAnswers.value[index] === question.correctAnswerIndex ? 1 : 0);
         }, 0);
       });
   
       const testPercentage = computed(() => {
-        if (!course.value || !course.value.test || course.value.test.length === 0) return 0;
-        return Math.round((correctAnswers.value / course.value.test.length) * 100);
+        if (!course.value || !course.value.testQuestions || course.value.testQuestions.length === 0) return 0;
+        return Math.round((correctAnswers.value / course.value.testQuestions.length) * 100);
       });
   
       const submitTest = () => {
@@ -130,7 +130,7 @@
       };
   
       const resetTest = () => {
-        userAnswers.value = new Array(course.value.test?.length || 0).fill(-1);
+        userAnswers.value = new Array(course.value.testQuestions?.length || 0).fill(-1);
         testSubmitted.value = false;
       };
   

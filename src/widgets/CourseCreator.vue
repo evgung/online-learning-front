@@ -29,7 +29,7 @@
   
         <div class="sections">
           <h4>Текстовые блоки:</h4>
-          <div v-for="(block, index) in newCourse.blocks" :key="index" class="block-item">
+          <div v-for="(block, index) in newCourse.textBlocks" :key="index" class="block-item">
             <input v-model="block.title" placeholder="Заголовок блока" />
             <textarea v-model="block.content" placeholder="Содержание блока"></textarea>
             <button @click="removeBlock(index)" class="remove-btn">Удалить</button>
@@ -39,15 +39,15 @@
   
         <div class="test-section" v-if="hasTest">
           <h4>Тест:</h4>
-          <div v-for="(question, qIndex) in newCourse.test" :key="'q' + qIndex" class="question-item">
+          <div v-for="(question, qIndex) in newCourse.testQuestions" :key="'q' + qIndex" class="question-item">
             <input v-model="question.question" placeholder="Вопрос" />
-            <div v-for="(option, oIndex) in question.options" :key="'o' + oIndex" class="option-item">
-              <input v-model="question.options[oIndex]" placeholder="Вариант ответа" />
+            <div v-for="(option, oIndex) in question.answers" :key="'o' + oIndex" class="option-item">
+              <input v-model="question.answers[oIndex]" placeholder="Вариант ответа" />
               <input
                 type="radio"
                 :name="'correct' + qIndex"
-                :checked="question.correctAnswer === oIndex"
-                @change="question.correctAnswer = oIndex"
+                :checked="question.correctAnswerIndex === oIndex"
+                @change="question.correctAnswerIndex = oIndex"
               />
               <label>Правильный ответ</label>
             </div>
@@ -97,11 +97,11 @@
         title: '',
         category: 'Программирование',
         readingTime: 10,
-        blocks: [] as Array<{ title: string; content: string }>,
-        test: [] as Array<{
+        textBlocks: [] as Array<{ title: string; content: string }>,
+        testQuestions: [] as Array<{
           question: string;
-          options: string[];
-          correctAnswer: number;
+          answers: string[];
+          correctAnswerIndex: number;
         }>,
       });
   
@@ -113,27 +113,27 @@
       };
   
       const addBlock = () => {
-        newCourse.value.blocks.push({ title: '', content: '' });
+        newCourse.value.textBlocks.push({ title: '', content: '' });
       };
   
       const removeBlock = (index: number) => {
-        newCourse.value.blocks.splice(index, 1);
+        newCourse.value.textBlocks.splice(index, 1);
       };
   
       const addQuestion = () => {
-        newCourse.value.test.push({
+        newCourse.value.testQuestions.push({
           question: '',
-          options: ['', ''],
-          correctAnswer: 0,
+          answers: ['', ''],
+          correctAnswerIndex: 0,
         });
       };
   
       const addOption = (qIndex: number) => {
-        newCourse.value.test[qIndex].options.push('');
+        newCourse.value.testQuestions[qIndex].answers.push('');
       };
   
       const removeQuestion = (index: number) => {
-        newCourse.value.test.splice(index, 1);
+        newCourse.value.testQuestions.splice(index, 1);
       };
   
       const resetCreator = () => {
@@ -141,8 +141,8 @@
           title: '',
           category: 'Программирование',
           readingTime: 10,
-          blocks: [],
-          test: [],
+          textBlocks: [],
+          testQuestions: [],
         };
         hasTest.value = false;
         error.value = null;
@@ -154,15 +154,15 @@
           return;
         }
   
-        if (newCourse.value.blocks.length === 0) {
+        if (newCourse.value.textBlocks.length === 0) {
           error.value = 'Добавьте хотя бы один текстовый блок';
           return;
         }
   
         const courseData = {
           ...newCourse.value,
-          hasTest: hasTest.value && newCourse.value.test.length > 0,
-          test: hasTest.value ? newCourse.value.test : [],
+          hasTest: hasTest.value && newCourse.value.testQuestions.length > 0,
+          test: hasTest.value ? newCourse.value.testQuestions : [],
         };
   
         isSaving.value = true;

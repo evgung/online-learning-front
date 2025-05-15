@@ -26,50 +26,51 @@
       ]
     },
     {
-      "id": "5366",
+      "id": "e3cc",
       "title": "Программирование на C#",
       "category": "Программирование",
       "readingTime": 10,
       "blocks": [
         {
-          "title": "Введение",
-          "content": "C# - это язык программирования"
+          "title": "Циклы",
+          "content": "Существуют циклы for, foreach, while, do while."
         },
         {
-          "title": "Циклы",
-          "content": "Циклы for, while"
+          "title": "Строки",
+          "content": "Строки неизменяемы."
         }
       ],
       "test": [
         {
-          "question": "C# это?",
+          "question": "Какого цикла нет в C#?",
           "options": [
-            "Язык программирования",
-            "Фигня",
-            "Что-то непонятное"
+            "for",
+            "while",
+            "foreach",
+            "repeat"
           ],
-          "correctAnswer": 0
+          "correctAnswer": 3
         },
         {
-          "question": "Какие есть циклы",
+          "question": "Строки неизменяемы",
           "options": [
-            "for, until",
-            "for, while"
+            "Верно",
+            "Неверно"
           ],
-          "correctAnswer": 1
+          "correctAnswer": 0
         }
       ],
       "hasTest": true
     },
     {
-      "id": "3206",
+      "id": "0009",
       "title": "Дизайн - это круто",
       "category": "Дизайн",
-      "readingTime": 40,
+      "readingTime": 60,
       "blocks": [
         {
-          "title": "ФВав",
-          "content": "пвапыва"
+          "title": "А",
+          "content": "ААА"
         }
       ],
       "test": [],

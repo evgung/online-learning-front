@@ -1,7 +1,13 @@
 <template>
-    <div class="home-view">
+    <div class="header-actions" v-if="isAdmin">
+      <button @click="goToAdminPanel" class="admin-button">
+        Админ-панель
+      </button>
+    </div>
+
+    <div v-if="isAuthenticated" class="home-view">
       <h1>Онлайн обучение</h1>
-      
+
       <div class="search-filters">
         <div class="filter-group">
           <label>Тематика:</label>
@@ -56,11 +62,13 @@
   
   <script lang="ts">
   import { defineComponent, computed, ref, onMounted } from 'vue';
+  import { useAuthStore } from '@/stores/auth'
   import { useCoursesStore } from '@/stores/courses';
   import CourseCard from '@/components/CourseCard.vue';
   import LoadingSpinner from '@/components/LoadingSpinner.vue';
   import ErrorAlert from '@/components/ErrorAlert.vue';
   import CourseCreator from '@/widgets/CourseCreator.vue';
+  import { useRouter } from 'vue-router'
   
   export default defineComponent({
     name: 'HomeView',
@@ -71,12 +79,20 @@
       CourseCreator,
     },
     setup() {
+      const authStore = useAuthStore();
       const coursesStore = useCoursesStore();
       const searchQuery = ref('');
       const categoryFilter = ref('');
       const timeFilter = ref('');
       const hasTestFilter = ref(false);
-  
+      const router = useRouter()
+      const isAuthenticated = computed(() => authStore.isAuthenticated)
+      const isAdmin = computed(() => authStore.isAdmin)
+
+      const goToAdminPanel = () => {
+        router.push('/admin')
+      }
+
       const fetchCourses = () => {
         coursesStore.fetchCourses();
       };
@@ -124,6 +140,9 @@
         timeFilter,
         hasTestFilter,
         fetchCourses,
+        isAuthenticated,
+        isAdmin,
+        goToAdminPanel
       };
     },
   });
@@ -173,4 +192,35 @@
     gap: 20px;
     margin-top: 20px;
   }
+
+  .header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.admin-button {
+  padding: 10px 20px;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-button:hover {
+  background-color: #434190;
+}
+
+.admin-button::before {
+  content: "⚙️";
+  font-size: 16px;
+}
+
   </style>
