@@ -10,11 +10,11 @@ export const useCoursesStore = defineStore('courses', () => {
   const error = ref<string | null>(null);
   const { getCourses, getCourseById, createCourse } = useApi();
 
-  const fetchCourses = async () => {
+  const fetchCourses = async (params: any) => {
     isLoading.value = true;
     error.value = null;
     try {
-      courses.value = await getCourses();
+      courses.value = await getCourses(params);
     } catch (err) {
       error.value = 'Не удалось загрузить курсы';
       console.error(err);
@@ -43,10 +43,10 @@ export const useCoursesStore = defineStore('courses', () => {
     try {
       const courseDataWithUser = {
         ...courseData,
-        authorId: cookies.get("id")
+        authorToken: cookies.get("jwt")
       }
       await createCourse(courseDataWithUser);
-      await fetchCourses();
+      await fetchCourses({});
     } catch (err) {
       error.value = 'Не удалось создать курс';
       console.error(err);

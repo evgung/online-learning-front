@@ -1,64 +1,66 @@
 <template>
-    <div class="header-actions" v-if="isAdmin">
-      <button @click="goToAdminPanel" class="admin-button">
-        Админ-панель
-      </button>
-    </div>
+  <div class="header-actions" v-if="isAdmin">
+    <button @click="goToAdminPanel" class="admin-button">Админ-панель</button>
+  </div>
 
-    <div v-if="isAuthenticated" class="home-view">
-      <h1>Онлайн обучение</h1>
+  <div v-if="isAuthenticated" class="home-view">
+    <h1>Онлайн обучение</h1>
 
-      <div class="search-filters">
-        <div class="filter-group">
-          <label>Тематика:</label>
-          <select v-model="categoryFilter">
-            <option value="">Все</option>
-            <option v-for="category in categories" :key="category" :value="category">
-              {{ category }}
-            </option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label>Время чтения:</label>
-          <select v-model="timeFilter">
-            <option value="">Любое</option>
-            <option value="short">До 15 мин</option>
-            <option value="medium">15-30 мин</option>
-            <option value="long">Более 30 мин</option>
-          </select>
-        </div>
-        
-        <div class="filter-group">
-          <label>
-            <input type="checkbox" v-model="hasTestFilter" />
-            Только с тестом
-          </label>
-        </div>
-        
-        <div class="filter-group">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Поиск по названию..."
-          />
-        </div>
+    <div class="search-filters">
+      <div class="filter-group">
+        <label>Тематика:</label>
+        <select v-model="categoryFilter">
+          <option value="">Все</option>
+          <option v-for="category in categories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
       </div>
       
-      <LoadingSpinner v-if="isLoading && !error" />
-      <ErrorAlert v-else-if="error" :message="error" :retry="fetchCourses" />
+      <div class="filter-group">
+        <label>Время чтения:</label>
+        <select v-model="timeFilter">
+          <option value="">Любое</option>
+          <option value="15">До 15 мин</option>
+          <option value="30">До 30 мин</option>
+          <option value="60">До 60 мин</option>
+        </select>
+      </div>
       
-      <div v-else class="courses-list">
-        <CourseCard
-          v-for="course in filteredCourses"
-          :key="course.id"
-          :course="course"
+      <div class="filter-group">
+        <label>
+          <input type="checkbox" v-model="hasTestFilter" />
+          Только с тестом
+        </label>
+      </div>
+      
+      <div class="filter-group">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Поиск по названию..."
         />
       </div>
-      
-      <CourseCreator />
+
+      <button @click="applyFilters" class="apply-filters-button">
+        Применить фильтры
+      </button>
     </div>
-  </template>
+    
+    <LoadingSpinner v-if="isLoading && !error" />
+    <ErrorAlert v-else-if="error" :message="error" :retry="fetchCourses" />
+    
+    <div v-else class="courses-list">
+      <CourseCard
+        v-for="course in courses"
+        :key="course.id"
+        :course="course"
+      />
+    </div>
+    
+    <CourseCreator />
+  </div>
+</template>
   
   <script lang="ts">
   import { defineComponent, computed, ref, onMounted } from 'vue';
@@ -93,47 +95,33 @@
         router.push('/admin')
       }
 
+      const applyFilters = () => {
+        const filters = {
+          searchQuery: searchQuery.value,
+          category: categoryFilter.value,
+          readingTime: timeFilter.value,
+          hasTest: hasTestFilter.value || undefined
+        };
+        coursesStore.fetchCourses(filters);
+      };
+
       const fetchCourses = () => {
-        coursesStore.fetchCourses();
+        coursesStore.fetchCourses({});
       };
   
       onMounted(fetchCourses);
   
-      const categories = computed(() => {
-        const allCategories = coursesStore.courses.map(course => course.category);
-        return [...new Set(allCategories)];
-      });
-  
-      const filteredCourses = computed(() => {
-        return coursesStore.courses.filter(course => {
-          // Фильтр по поисковому запросу
-          const matchesSearch = course.title.toLowerCase().includes(searchQuery.value.toLowerCase());
-          
-          // Фильтр по категории
-          const matchesCategory = !categoryFilter.value || course.category === categoryFilter.value;
-          
-          // Фильтр по времени чтения
-          let matchesTime = true;
-          if (timeFilter.value === 'short') {
-            matchesTime = course.readingTime <= 15;
-          } else if (timeFilter.value === 'medium') {
-            matchesTime = course.readingTime > 15 && course.readingTime <= 30;
-          } else if (timeFilter.value === 'long') {
-            matchesTime = course.readingTime > 30;
-          }
-          
-          // Фильтр по наличию теста
-          const matchesTest = !hasTestFilter.value || course.hasTest;
-          
-          return matchesSearch && matchesCategory && matchesTime && matchesTest;
-        });
-      });
+      const categories = [
+        "Программирование",
+        "Дизайн",
+        "Маркетинг",
+        "Бизнес"
+      ];
   
       return {
         isLoading: computed(() => coursesStore.isLoading),
         error: computed(() => coursesStore.error),
         courses: computed(() => coursesStore.courses),
-        filteredCourses,
         categories,
         searchQuery,
         categoryFilter,
@@ -142,7 +130,8 @@
         fetchCourses,
         isAuthenticated,
         isAdmin,
-        goToAdminPanel
+        goToAdminPanel,
+        applyFilters
       };
     },
   });

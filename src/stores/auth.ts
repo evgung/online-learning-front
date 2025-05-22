@@ -33,7 +33,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = () => {
     cookies.remove('jwt');
-    cookies.remove('id');
     cookies.remove('isAdmin');
     
     isAuthenticated.value = false;

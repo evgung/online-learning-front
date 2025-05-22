@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, computed } from 'vue'
 import { useAdminPanelStore } from '@/stores/adminPanel'
 
 export default defineComponent({
@@ -26,7 +26,7 @@ export default defineComponent({
     onMounted(fetchCourses);
 
     return {
-      courses: coursesStore.courses,
+      courses: computed(() => coursesStore.courses)
     }
   }
 })

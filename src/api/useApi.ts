@@ -27,9 +27,10 @@ export const useApi = () => {
     }
   };
 
-  const getCourses = async () => {
+  const getCourses = async (params: any) => {
     try {
-      const response = await api.get('/courses');
+      const response = await api.get('/courses', {params});
+      console.log("Отправляемые фильтры:", params);
       return response.data;
     } catch (error) {
       throw error;
